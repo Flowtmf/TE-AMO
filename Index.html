@@ -1,0 +1,154 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Ti ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- GSAP para animaciones fluidas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Three.js para el corazón 3D de la escena 2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- ESCENA 1: Introducción -->
+        <div id="scene1" class="scene active">
+            <div id="s1-text-container">
+                <p id="s1-t1" class="hidden-text">Hola, mi amor ❤️</p>
+                <p id="s1-t2" class="hidden-text">Hoy no quiero que solamente leas unas palabras.</p>
+                <p id="s1-t3" class="hidden-text">Quiero que entres a un pequeño mundo que hice para ti.</p>
+                <p id="s1-t4" class="hidden-text">¿Quieres empezar?</p>
+            </div>
+            <div id="s1-buttons" class="hidden-ui">
+                <button class="glass-btn s1-btn">🌸 Sí.</button>
+                <button class="glass-btn s1-btn">❤️ Claro que sí.</button>
+            </div>
+        </div>
+
+        <!-- ESCENA 2: El Beso -->
+        <div id="scene2" class="scene">
+            <p id="s2-t1" class="hidden-text">Pero antes...</p>
+            <p id="s2-t2" class="hidden-text">Necesito un besito. 🥹</p>
+            <div id="canvas-container-3d"></div>
+            <p id="s2-t3" class="hidden-text">Sabía que no me lo ibas a negar.<br>Te amo muchísimo. ❤️</p>
+        </div>
+
+        <!-- ESCENA 3: El Pasillo -->
+        <div id="scene3" class="scene">
+            <div class="hallway">
+                <div class="wall left-wall"></div>
+                <div class="wall right-wall"></div>
+                <div class="floor"></div>
+                <div class="ceiling"></div>
+                <div class="particles-container" id="hallway-particles"></div>
+                <div class="door-container">
+                    <div class="door left-door"></div>
+                    <div class="door right-door"></div>
+                    <div class="door-glow"></div>
+                </div>
+            </div>
+            <div id="white-flash"></div>
+        </div>
+
+        <!-- ESCENA 4: El Jardín -->
+        <div id="scene4" class="scene">
+            <canvas id="gardenCanvas"></canvas>
+            
+            <div id="ui-layer">
+                <div id="flower-counter" class="glass-panel">
+                    🌸 Flores descubiertas<br>
+                    <span id="counter-text">0 / 100</span>
+                </div>
+                
+                <div id="settings-btn" class="glass-btn-small">⚙️</div>
+            </div>
+
+            <!-- Interfaz de Herramientas (Oculta por defecto) -->
+            <div id="tools-container" class="hidden-ui">
+                <button id="tool-water" class="tool-btn">💧</button>
+                <button id="tool-sun" class="tool-btn">☀️</button>
+                <button id="tool-fert" class="tool-btn">🌱</button>
+            </div>
+
+            <!-- Pergamino de Poemas -->
+            <div id="scroll-container" class="hidden-ui">
+                <div class="scroll-paper">
+                    <h2 id="scroll-title">Razón #1</h2>
+                    <p id="scroll-text">Poema...</p>
+                    <button id="scroll-close" class="glass-btn">🌸 Seguir explorando</button>
+                </div>
+            </div>
+
+            <!-- Pensamiento de Hoja -->
+            <div id="leaf-thought" class="hidden-ui glass-panel">
+                <p id="leaf-text"></p>
+            </div>
+        </div>
+
+        <!-- ESCENA 5: Final / Habitación Secreta -->
+        <div id="scene-final" class="scene">
+            <div id="final-letter-container" class="hidden-ui">
+                <div class="scroll-paper final-letter">
+                    <h2>Para ti, Sharon ❤️</h2>
+                    <p id="final-editable-text">
+                        (Carta final editable desde el script.js)
+                    </p>
+                    <button id="final-continue" class="glass-btn">❤️ Continuar</button>
+                </div>
+            </div>
+            
+            <div id="heart-text-container" class="hidden-ui">
+                <p id="heart-text" class="glow-text">
+                    Gracias por recorrer este jardín conmigo. Cada flor fue una pequeña parte de todo lo que siento por ti.<br><br>
+                    Feliz Día de la Novia, mi amor. Aunque llegué un poquito tarde, mi amor por ti siempre encuentra el camino para llegar a tu corazón. ❤️
+                </p>
+            </div>
+
+            <div id="credits" class="hidden-ui">
+                <p>Hecho con muchísimo amor para la niña más bonita del mundo. ❤️</p>
+                <p class="signature">- Yerik</p>
+            </div>
+        </div>
+
+        <!-- Habitación Secreta -->
+        <div id="secret-room" class="scene">
+            <div class="room-background">
+                <div class="desk">
+                    <div id="our-book" class="book-cover">
+                        <h3>Nuestro Libro</h3>
+                        <p>Tócalo para abrir</p>
+                    </div>
+                </div>
+                <button id="leave-room" class="glass-btn">Volver al jardín</button>
+            </div>
+            <!-- Estructura del libro (lista para expandir) -->
+            <div id="book-ui" class="hidden-ui">
+                <div class="book-pages">
+                    <div class="page left-page">
+                        <h2>Capítulo 1</h2>
+                        <p>Aquí comenzará nuestra historia escrita...</p>
+                    </div>
+                    <div class="page right-page">
+                        <div class="photo-placeholder">Coloca una foto aquí</div>
+                    </div>
+                </div>
+                <button id="close-book" class="glass-btn">Cerrar libro</button>
+            </div>
+        </div>
+
+        <!-- Menú de Ajustes -->
+        <div id="settings-menu" class="hidden-ui glass-panel">
+            <h3>Ajustes</h3>
+            <button id="toggle-sound" class="settings-btn">🔊 Sonido: Activado</button>
+            <button id="toggle-fullscreen" class="settings-btn">🔲 Pantalla Completa</button>
+            <button id="reset-progress" class="settings-btn" style="color: #ff6b6b;">⚠️ Reiniciar Progreso</button>
+            <button id="close-settings" class="glass-btn">Cerrar</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
+  
