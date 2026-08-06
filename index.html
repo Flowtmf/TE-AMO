@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Sharon ♥️</title>
+    
+    <!-- Importando fuentes elegantes y legibles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100dvh;
+            /* Aplicando la nueva fuente elegante y legible */
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #0a0303, #1a0505, #0d0202);
+            color: #d1d5db;
+            overflow: hidden;
+        }
+
+        /* Pantalla de inicio con diseño tipo carta estelar rojiza */
+        #pantalla-inicio {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #2a0808 0%, #070303 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1.5s ease;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .tarjeta-sobre {
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 40px 25px;
+            border-radius: 20px;
+            background: rgba(26, 5, 5, 0.7);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+            max-width: 380px;
+            width: 100%;
+        }
+
+        .mensaje-sobre {
+            /* Fuente tipo cursiva a mano para la dedicatoria */
+            font-family: 'Great Vibes', cursive;
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #f87171;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .btn-abrir {
+            background: linear-gradient(135deg, #ef4444, #991b1b);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-abrir:active {
+            transform: scale(0.95);
+        }
+
+        /* Zona de lectura del poema */
+        #zona-lectura {
+            height: 100%;
+            overflow-y: auto;
+            padding: 40px 20px 220px 20px;
+            display: none;
+            scroll-behavior: smooth;
+        }
+
+        .estrofa {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 55px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.2s ease;
+            text-align: center;
+            color: #e5e7eb;
+        }
+
+        .estrofa.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hueco de la palabra oculta */
+        .hueco-palabra {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.1);
+            border-bottom: 2px dashed #ef4444;
+            min-width: 50px;
+            text-align: center;
+            color: #f87171;
+            font-weight: bold;
+            padding: 0 6px;
+            letter-spacing: 2px;
+            border-radius: 4px;
+        }
+
+        .hueco-palabra.completado {
+            background: transparent;
+            border-bottom: none;
+            color: #ef4444;
+            text-shadow: 0 0 12px rgba(239, 68, 68, 0.7);
+            font-size: 20px;
+        }
+
+        /* Teclado interactivo inferior moderno */
+        #zona-juego {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(13, 2, 2, 0.95);
+            border-top: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 15px 15px 30px 15px;
+            text-align: center;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.9);
+            display: none;
+            backdrop-filter: blur(10px);
+            border-radius: 25px 25px 0 0;
+        }
+
+        .instruccion {
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        /* Espacio donde van cayendo las letras que eliges */
+        .caja-respuesta {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            min-height: 40px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .letra-seleccionada {
+            background: #ef4444;
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+            font-family: Arial, sans-serif; /* Fuente limpia para el juego */
+        }
+
+        /* Banco de letras disponibles */
+        .letras-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-letra {
+            background: #2a0808;
+            border: 1px solid #4a0d0d;
+            color: #f3f4f6;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: Arial, sans-serif;
+        }
+
+        .btn-letra:active {
+            background: #ef4444;
+            color: #ffffff;
+            transform: scale(0.9);
+        }
+
+        .btn-letra.usada {
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        /* Pantalla final */
+        #revelacion-final {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 30px 10px;
+            animation: aparecerLento 2s ease;
+        }
+
+        .frase-magica {
+            color: #ef4444;
+            font-size: 26px;
+            font-weight: bold;
+            line-height: 1.6;
+            text-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        .cierre {
+            font-style: italic;
+            color: #9ca3af;
+            font-size: 18px;
+        }
+
+        @keyframes aparecerLento {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="musica" loop>
+        <source src="cancion.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- INICIO ELEGANTE -->
+    <div id="pantalla-inicio">
+        <div class="tarjeta-sobre">
+            <div class="mensaje-sobre">
+                Para Sharon ♥️,<br>
+                mi milagro más hermoso.
+            </div>
+            <button class="btn-abrir" id="btn-comenzar">Descubrir carta</button>
+        </div>
+    </div>
+
+    <!-- POEMA -->
+    <div id="zona-lectura">
+        
+        <div class="estrofa" id="estrofa-0">
+            Hay encuentros que parecen simples accidentes,<br>
+            pero el universo jamás se equivoca cuando escribe destinos.<br>
+            Antes de ti, mis días eran habitaciones con ventanas abiertas<br>
+            donde el viento entraba, pero nunca se quedaba.<br>
+            Vivía rodeado de amaneceres,<br>
+            aunque ninguno conocía realmente mi nombre.<br>
+            Entonces llegaste con la calma de los milagros<br>
+            y comprendí que el verbo más inmenso jamás pronunciado sería <span class="hueco-palabra" id="hueco-0"></span>.
+        </div>
+
+        <div class="estrofa" id="estrofa-1">
+            No irrumpiste como una tormenta;<br>
+            te pareciste más a la lluvia que convence a la tierra de volver a creer en las flores.<br>
+            Cada palabra tuya encontraba la grieta exacta<br>
+            donde mi corazón escondía sus inviernos.<br>
+            Sin hacer ruido cambiaste el curso de mis mareas,<br>
+            y aquello que parecía imposible simplemente <span class="hueco-palabra" id="hueco-1"></span>.
+        </div>
+
+        <div class="estrofa" id="estrofa-2">
+            Desde tus ojos entendí que existen horizontes<br>
+            que no caben dentro del cielo.<br>
+            Encontré galaxias respirando en tus pupilas,<br>
+            mares aprendiendo el color de tu risa,<br>
+            y constelaciones inclinándose para escuchar tu voz.<br>
+            Solo quien ha amado de verdad sabe lo que significa <span class="hueco-palabra" id="hueco-2"></span>.
+        </div>
+
+        <div class="estrofa" id="estrofa-3">
+            Si las montañas pudieran inclinarse,<br>
+            lo harían para contemplar la delicadeza con la que sonríes.<br>
+            Si el océano pudiera sentir envidia,<br>
+            guardaría sus olas para imitar la profundidad de tu mirada.<br>
+            Todo lo hermoso parece una pequeña explicación<br>
+            de algo infinitamente más grande <span class="hueco-palabra" id="hueco-3"></span>.
+        </div>
+
+        <div class="estrofa" id="estrofa-4">
+            He visto al otoño rendirse ante una sola primavera,<br>
+            a la lluvia besar la tierra después de largas ausencias,<br>
+            y al amanecer vencer a la noche sin levantar la voz.<br>
+            Pero ninguno de esos milagros alcanza<br>
+            la paz que nace cuando camino contigo <span class="hueco-palabra" id="hueco-4"></span>.
+        </div>
+
+        <div class="estrofa" id="estrofa-5">
+            El tiempo insiste en contar los días,<br>
+            pero ignora que contigo cada segundo aprende a ser infinito.<br>
+            Los relojes avanzan,<br>
+            las estaciones cambian,<br>
+            los años pasan;<br>
+            mi amor permanece inmóvil,<br>
+            esperándote siempre en <span class="hueco-palabra" id="hueco-5"></span>.
+        </div>
+
+        <div class="estrofa" id="estrofa-6">
+            Dicen que el silencio es vacío.<br>
+            Qué poco conocen a quienes aman.<br>
+            El silencio tiene el eco de tus abrazos,<br>
+            la respiración tranquila de tus sueños,<br>
+            la música invisible de tu existencia.<br>
+            Cuando todo calla,<br>
+            es cuando más fuerte pronuncia tu nombre el <span class="hueco-palabra" id="hueco-6"></span>.
+        </div>
+
+        <div class="estrofa" id="estrofa-7">
+            Y si un día el universo olvidara cómo encender las estrellas,<br>
+            yo las dibujaría una por una sobre el cielo<br>
+            solo para que tu sonrisa no dejara de tener compañía.<br>
+            Si el viento perdiera su camino,<br>
+            le enseñaría el tuyo.<br>
+            Porque desde que existes,<br>
+            mi corazón todo lo <span class="hueco-palabra" id="hueco-7"></span>.
+        </div>
+
+        <div class="estrofa" id="estrofa-8">
+            Así entendería, incluso cuando el último sol se apague<br>
+            y el tiempo deje caer su última hoja sobre la eternidad,<br>
+            que ninguna distancia,<br>
+            ninguna noche,<br>
+            ningún final<br>
+            podrá borrar la verdad más hermosa que he aprendido contigo: <span class="hueco-palabra" id="hueco-8"></span>.
+        </div>
+
+        <!-- REVELACIÓN FINAL -->
+        <div id="revelacion-final">
+            <div style="font-size: 14px; color:#9ca3af; margin-bottom: 12px; letter-spacing: 2px; text-transform: uppercase;">La verdad oculta en mis letras:</div>
+            <div class="frase-magica" id="frase-armada"></div>
+            <div class="cierre">Te amo con el alma entera.<br>— Yerik.</div>
+        </div>
+
+    </div>
+
+    <!-- ZONA DE JUEGO -->
+    <div id="zona-juego">
+        <div class="instruccion" id="instruccion-texto">Ordena las letras (la primera ya está fija):</div>
+        
+        <div class="caja-respuesta" id="caja-respuesta"></div>
+        <div class="letras-container" id="contenedor-letras"></div>
+    </div>
+
+    <script>
+        // La espectacular frase que se forma palabra por palabra
+        const palabrasSecretas = ["AMARTE", "FUE", "DESCUBRIR", "QUE", "HASTA", "EL", "SILENCIO", "PUEDE", "FLORECER"];
+        let nivelActual = 0;
+        
+        const btnComenzar = document.getElementById("btn-comenzar");
+        const pantallaInicio = document.getElementById("pantalla-inicio");
+        const zonaLectura = document.getElementById("zona-lectura");
+        const zonaJuego = document.getElementById("zona-juego");
+        const contenedorLetras = document.getElementById("contenedor-letras");
+        const cajaRespuesta = document.getElementById("caja-respuesta");
+        const audio = document.getElementById("musica");
+
+        btnComenzar.addEventListener("click", () => {
+            audio.play().catch(e => console.log("Interacción requerida para audio"));
+            pantallaInicio.style.opacity = "0";
+            setTimeout(() => {
+                pantallaInicio.style.display = "none";
+                zonaLectura.style.display = "block";
+                zonaJuego.style.display = "block";
+                mostrarEstrofa(0);
+                prepararJuego(0);
+            }, 1000);
+        });
+
+        function mostrarEstrofa(indice) {
+            const estrofa = document.getElementById("estrofa-" + indice);
+            estrofa.style.display = "block";
+            setTimeout(() => {
+                estrofa.classList.add("visible");
+                estrofa.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+
+        // Mezclar letras para el juego (protegiendo la primera)
+        function desordenarExcluyendoPrimera(palabra) {
+            let primeraLetra = palabra[0];
+            let resto = palabra.slice(1).split('');
+            
+            for (let i = resto.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [resto[i], resto[j]] = [resto[j], resto[i]];
+            }
+            return { primera: primeraLetra, resto: resto };
+        }
+
+        let letrasElegidas = [];
+        let datosJuegoActual = null;
+
+        function prepararJuego(indice) {
+            letrasElegidas = [];
+            cajaRespuesta.innerHTML = "";
+            contenedorLetras.innerHTML = "";
+
+            const palabraOriginal = palabrasSecretas[indice];
+            const info = desordenarExcluyendoPrimera(palabraOriginal);
+            datosJuegoActual = { palabraOriginal, ...info };
+
+            actualizarVisualHueco();
+            agregarLetraSeleccionada(info.primera, null, true);
+
+            info.resto.forEach((letra, indexId) => {
+                const btn = document.createElement("button");
+                btn.className = "btn-letra";
+                btn.textContent = letra;
+                btn.dataset.id = indexId;
+
+                btn.addEventListener("click", () => {
+                    if (btn.classList.contains("usada")) return;
+                    btn.classList.add("usada");
+                    
+                    letrasElegidas.push({ letra: letra, botonOriginal: btn });
+                    actualizarCajaRespuesta();
+                    verificarProgreso();
+                });
+
+                contenedorLetras.appendChild(btn);
+            });
+        }
+
+        function agregarLetraSeleccionada(letra, objetoLetraElegida, esFija) {
+            const span = document.createElement("div");
+            span.className = "letra-seleccionada";
+            span.textContent = letra;
+
+            if (!esFija) {
+                span.title = "Toca para borrar";
+                span.addEventListener("click", () => {
+                    objetoLetraElegida.botonOriginal.classList.remove("usada");
+                    letrasElegidas = letrasElegidas.filter(item => item !== objetoLetraElegida);
+                    actualizarCajaRespuesta();
+                });
+            } else {
+                span.style.background = "#991b1b"; /* Rojo oscuro para la letra fija */
+                span.style.cursor = "default";
+            }
+
+            cajaRespuesta.appendChild(span);
+        }
+
+        function actualizarCajaRespuesta() {
+            cajaRespuesta.innerHTML = "";
+            agregarLetraSeleccionada(datosJuegoActual.primera, null, true);
+            
+            letrasElegidas.forEach(item => {
+                agregarLetraSeleccionada(item.letra, item, false);
+            });
+
+            actualizarVisualHueco();
+        }
+
+        function actualizarVisualHueco() {
+            const huecoActual = document.getElementById("hueco-" + nivelActual);
+            let palabraArmadaActual = datosJuegoActual.primera + letrasElegidas.map(i => i.letra).join('');
+            
+            let visual = palabraArmadaActual.split('').join(' ');
+            let faltantes = datosJuegoActual.palabraOriginal.length - palabraArmadaActual.length;
+            if(faltantes > 0) {
+                visual += ' _'.repeat(faltantes);
+            }
+            huecoActual.textContent = visual;
+        }
+
+        function verificarProgreso() {
+            let palabraActual = datosJuegoActual.primera + letrasElegidas.map(i => i.letra).join('');
+            
+            if (palabraActual.length === datosJuegoActual.palabraOriginal.length) {
+                if (palabraActual === datosJuegoActual.palabraOriginal) {
+                    const huecoActual = document.getElementById("hueco-" + nivelActual);
+                    huecoActual.classList.add("completado");
+                    
+                    nivelActual++;
+                    if (nivelActual < palabrasSecretas.length) {
+                        setTimeout(() => {
+                            mostrarEstrofa(nivelActual);
+                            prepararJuego(nivelActual);
+                        }, 1200);
+                    } else {
+                        zonaJuego.style.display = "none";
+                        setTimeout(revelarFinal, 1500);
+                    }
+                } else {
+                    cajaRespuesta.style.transform = "scale(1.03)";
+                    setTimeout(() => cajaRespuesta.style.transform = "scale(1)", 200);
+                }
+            }
+        }
+
+        function revelarFinal() {
+            const contenedorFinal = document.getElementById("revelacion-final");
+            const fraseArmada = document.getElementById("frase-armada");
+            
+            // Toma exactamente las palabras del juego y las une formando la mágica frase final
+            fraseArmada.textContent = palabrasSecretas.join(" ");
+            
+            contenedorFinal.style.display = "block";
+            contenedorFinal.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+    </script>
+</body>
+</html>
